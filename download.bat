@@ -22,6 +22,51 @@ cd ..
 
 mkdir basica_media
 cd basica_media
+mkdir matricula
+cd matricula
+https://datosabiertos.mineduc.cl/wp-content/uploads/2022/09/Matricula-por-estudiante-2022.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2021.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2020.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2019.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2018.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2017.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2016.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2015.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2014.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2013.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2012.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2011.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2010.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2022/01/Matricula-por-estudiante-2009.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2008.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2007.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2006.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2005.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2004.rar
+
+cd..
+mkdir asistencia_mensual
+cd asistencia_mensual
+https://datosabiertos.mineduc.cl/wp-content/uploads/2023/06/Asistencia-declarada-abril-2023.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2023/06/Asistencia-declarada-marzo-2023.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2023/02/Asistencia-declarada-Diciembre-2022.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2023/01/Asistencia-declarada-Noviembre-2022.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2022/11/Asistencia-declarada-Octubre-2022.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2022/12/Asistencia-declarada-Septiembre-2022.rar
+https://datosabiertos.mineduc.cl/wp-content/uploads/2022/12/Asistencia-declarada-Agosto-2022.rar
+
+
+
+
+
+
+
+
+
+
+
+
+cd ..
 cd ..
 
 mkdir superior
