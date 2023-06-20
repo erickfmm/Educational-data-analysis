@@ -77,7 +77,7 @@ common_columns = [
     "POR_ASIS_I",
     "FORMAL"
 ]
-base_folder = "estudiantes/parvularia/matricula"
+base_folder = "datosabiertos.mineduc.cl/estudiantes/parvularia_matricula"
 # Create an empty DataFrame to store the combined data
 combined_data = pd.DataFrame()
 

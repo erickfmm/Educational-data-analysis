@@ -1,5 +1,5 @@
-mkdir matricula
-cd matricula
+mkdir parvularia_matricula
+cd parvularia_matricula
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2022/10/Matricula-Ed-Parvularia-2022.rar --output 2022.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-Parvularia-2021.rar --output 2021.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-Parvularia-2020.rar --output 2020.rar
