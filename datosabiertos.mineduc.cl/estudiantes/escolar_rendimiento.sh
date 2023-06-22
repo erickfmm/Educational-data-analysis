@@ -22,5 +22,5 @@ curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Rendimiento
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Rendimiento-2004.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Rendimiento-2003.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Rendimiento-2002.rar
-unrar x -c- -cfg- -inul -o+ -y "%CD%\*.rar" "%CD%\"
+unrar x *.rar
 cd ..

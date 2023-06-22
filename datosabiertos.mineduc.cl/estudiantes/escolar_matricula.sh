@@ -1,5 +1,5 @@
-mkdir matricula
-cd matricula
+mkdir escolar_matricula
+cd escolar_matricula
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2022/09/Matricula-por-estudiante-2022.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2021.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2020.rar
@@ -19,5 +19,5 @@ curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-p
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2006.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2005.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2004.rar
-unrar x -c- -cfg- -inul -o+ -y "%CD%\*.rar" "%CD%\"
+unrar x *.rar
 cd ..

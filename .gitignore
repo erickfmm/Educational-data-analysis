@@ -158,3 +158,12 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+
+#own
+
+#datosabiertos.mineduc.cl/
+!datosabiertos.mineduc.cl/establecimientos/directorio.sh
+!datosabiertos.mineduc.cl/estudiantes/escolar_matricula.sh
+!datosabiertos.mineduc.cl/estudiantes/escolar_rendimiento.sh
+!datosabiertos.mineduc.cl/estudiantes/parvularia_matricula.sh

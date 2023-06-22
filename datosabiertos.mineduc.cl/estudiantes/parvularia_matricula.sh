@@ -12,5 +12,5 @@ curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-P
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-Parvularia-2013.rar --output 2013.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-Parvularia-2012.rar --output 2012.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-Ed.-Parvularia-2011.rar --output 2011.rar
-unrar x -c- -cfg- -inul -o+ -y "%CD%\*.rar" "%CD%\"
+unrar x *.rar
 cd ..
