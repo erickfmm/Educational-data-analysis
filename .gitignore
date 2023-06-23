@@ -162,7 +162,7 @@ cython_debug/
 
 #own
 
-#datosabiertos.mineduc.cl/
+datosabiertos.mineduc.cl/**
 !datosabiertos.mineduc.cl/establecimientos/directorio.sh
 !datosabiertos.mineduc.cl/estudiantes/escolar_matricula.sh
 !datosabiertos.mineduc.cl/estudiantes/escolar_rendimiento.sh

@@ -12,4 +12,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 RUN dos2unix download.sh
 
-CMD ["python3", "./connect_to_spark.py"]
+CMD ["python3", "./src/main.py", "insert"]

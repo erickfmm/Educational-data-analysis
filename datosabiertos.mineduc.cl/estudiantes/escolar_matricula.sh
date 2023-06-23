@@ -19,5 +19,5 @@ curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-p
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2006.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2005.rar
 curl -LO https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/Matricula-por-estudiante-2004.rar
-unrar x *.rar
+for file in *.rar; do unrar e "$file"; done
 cd ..

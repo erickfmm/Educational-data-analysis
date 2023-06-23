@@ -32,6 +32,6 @@ curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/DirectorioOfici
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/DirectorioOficial1994.rar --output 1994.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/DirectorioOficial1993.rar --output 1993.rar
 curl https://datosabiertos.mineduc.cl/wp-content/uploads/2021/12/DirectorioOficial1992.rar --output 1992.rar
-unrar x *.rar
-unzip x *.zip
+for file in *.rar; do unrar e "$file"; done
+for file in *.zip; do unzip "$file"; done
 cd ..
