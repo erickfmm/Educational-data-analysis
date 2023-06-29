@@ -167,3 +167,7 @@ datosabiertos.mineduc.cl/**
 !datosabiertos.mineduc.cl/estudiantes/escolar_matricula.sh
 !datosabiertos.mineduc.cl/estudiantes/escolar_rendimiento.sh
 !datosabiertos.mineduc.cl/estudiantes/parvularia_matricula.sh
+metastore_db/
+spark-warehouse/
+
+**_LOG.txt

@@ -38,18 +38,20 @@ def download_insert(args):
         logger = logging.getLogger('root')
         logger.info(f"Iniciando create: args")
         spark = connect_to_spark.connect(args)
-        #parvularia_df = parvularia_matricula_df.get_df()
+        #parvularia_df = 
+        parvularia_matricula_df.get_df(spark)
 
-        _ = spark.sql("DROP TABLE IF EXISTS table_test_1")
-        df = spark.createDataFrame([
-                (100, "Hyukjin Kwon"), (120, "Hyukjin Kwon"), (140, "Haejoon Lee")],
-                schema=["age", "name"])
-        df.write.saveAsTable("table_test_1")
+        #_ = spark.sql("DROP TABLE IF EXISTS table_test_1")
+        #df = spark.createDataFrame(parvularia_df)
+        #df = spark.createDataFrame([
+        #        (100, "Hyukjin Kwon"), (120, "Hyukjin Kwon"), (140, "Haejoon Lee")],
+        #        schema=["age", "name"])
+        #df.write.saveAsTable("estudiantes_parvularia_matricula")
         print("Tables:")
         print(spark.catalog.listTables())
-        _ = spark.sql("DROP TABLE table_test_1")
-        print("Tables:")
-        print(spark.catalog.listTables())
+        #_ = spark.sql("DROP TABLE table_test_1")
+        #print("Tables:")
+        #print(spark.catalog.listTables())
 
 
 if __name__ == "__main__":
