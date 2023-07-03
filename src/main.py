@@ -27,7 +27,7 @@ def setup_custom_logger(name: str, t_stamp: str) -> logging.Logger:
         handlerFile.setFormatter(file_formatter)
 
         logger = logging.getLogger(name)
-        _logginLevel = logging.DEBUG if "--debug" in sys.argv or "-d" in sys.argv else logging.INFO
+        _logginLevel = logging.DEBUG if "--debug" in sys.argv or "-d" in sys.argv else logging.DEBUG#INFO
         logger.setLevel(_logginLevel)
         logger.addHandler(handlerStream)
         logger.addHandler(handlerFile)

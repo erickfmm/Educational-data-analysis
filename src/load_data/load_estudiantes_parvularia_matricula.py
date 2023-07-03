@@ -4,6 +4,7 @@ import glob
 from os.path import join
 import logging
 from pyspark.sql.types import StructType,StructField, StringType, IntegerType, FloatType, LongType, DoubleType
+from src.load_data.helper import to_int, to_float
 # Specify the files to be loaded (you can adjust the file paths and column names accordingly)
 file_paths = [
     "20201201_Educacion_parvularia_oficial_2020_20200831_WEB.csv",
@@ -91,7 +92,7 @@ def get_df(spark) -> pd.DataFrame:
         StructField("FEC_NAC_ALU",IntegerType(), True),
         StructField("ID_ESTAB",IntegerType(), True),
         StructField("RBD",IntegerType(), True),
-        StructField("ID_ESTAB_J",LongType(), nullable=True),
+        StructField("ID_ESTAB_J",IntegerType(), nullable=True),
         StructField("ID_ESTAB_I",IntegerType(), nullable=True),
         StructField("NOM_ESTAB",StringType(), True),
         StructField("COD_REG_ESTAB",IntegerType(), True),
@@ -141,9 +142,48 @@ def get_df(spark) -> pd.DataFrame:
         StructField("POR_ASIS_I",FloatType(), True), # FloatType
         StructField("FORMAL",IntegerType(), True)
     ])
+    int_columns = [
+        "AGNO",
+        "MES",
+        "MRUN",
+        "GEN_ALU",
+        "FEC_NAC_ALU",
+        "ID_ESTAB",
+        "RBD",
+        "ID_ESTAB_J",
+        "ID_ESTAB_I",
+        "COD_REG_ESTAB",
+        "COD_PRO_ESTAB",
+        "COD_COM_ESTAB",
+        "COD_DEPROV_ESTAB",
+        "RURAL_ESTAB",
+        "ORIGEN",
+        "DEPENDENCIA",
+        "NIVEL1",
+        "NIVEL2",
+        "COD_ENSE1_M",
+        "COD_GRADO_M",
+        "COD_TIP_CUR_M",
+        "COD_DEPE1_M",
+        "COD_ENSE2_M",
+        "ESTADO_ESTAB_M",
+        "CORR_GRU_J",
+        "COD_PROG_J",
+        "COD_NIVEL_J",
+        "COD_MODAL_J",
+        "ASIS_REAL_J",
+        "ASIS_POTEN_J",
+        "DIAS_TRAB_GRUPO_J",
+        "COD_NIVEL_I",
+        "COD_GRUPO_I",
+        "TIPO_SOSTENEDOR",
+        "ASIS_REAL_I",
+        "ASIS_POT_I",
+        "FORMAL"
+    ]
     # Create an empty DataFrame to store the combined data
     #combined_data = pd.DataFrame()
-
+    _ = spark.sql("DROP TABLE IF EXISTS estudiantes_parvularia_matricula")
     # Iterate through each file
     for file_path in file_paths:
         print(file_path)
@@ -154,55 +194,22 @@ def get_df(spark) -> pd.DataFrame:
         print("to reindex")
         df = df.reindex(columns=common_columns)
         # Select the common columns from the loaded DataFrame
-        selected_columns = df[common_columns]
-        def to_int(n):
-            try:
-                return np.int64(n)
-            except:
-                return -1#np.nan
-        def to_float(n):
-            try:
-                x = np.float64(n)
-                if x is np.nan or not np.isfinite(x):
-                    return -1.0
-                return x
-            except:
-                return -1.0#np.nan
+        df = df[common_columns]
         print("to cast")
-        selected_columns["AGNO"] = selected_columns["AGNO"].apply(to_int).astype('Int64')
-        selected_columns["RBD"] = selected_columns["RBD"].apply(to_int).astype('Int64')
-        selected_columns["ID_ESTAB_J"] = selected_columns["ID_ESTAB_J"].apply(to_int).astype('Int64')
-        selected_columns["ID_ESTAB_I"] = selected_columns["ID_ESTAB_I"].apply(to_int).astype('Int64')
-        selected_columns["COD_DEPROV_ESTAB"] = selected_columns["COD_DEPROV_ESTAB"].apply(to_int).astype('Int64')
-        selected_columns["COD_ENSE1_M"] = selected_columns["COD_ENSE1_M"].apply(to_int).astype('Int64')
-        selected_columns["COD_GRADO_M"] = selected_columns["COD_GRADO_M"].apply(to_int).astype('Int64')
-        selected_columns["COD_TIP_CUR_M"] = selected_columns["COD_TIP_CUR_M"].apply(to_int).astype('Int64')
-        selected_columns["COD_DEPE1_M"] = selected_columns["COD_DEPE1_M"].apply(to_int).astype('Int64')
-        selected_columns["COD_ENSE2_M"] = selected_columns["COD_ENSE2_M"].apply(to_int).astype('Int64')
-        selected_columns["ESTADO_ESTAB_M"] = selected_columns["ESTADO_ESTAB_M"].apply(to_int).astype('Int64')
-        selected_columns["CORR_GRU_J"] = selected_columns["CORR_GRU_J"].apply(to_int).astype('Int64')
-        selected_columns["COD_PROG_J"] = selected_columns["COD_PROG_J"].apply(to_int).astype('Int64')
-        selected_columns["COD_NIVEL_J"] = selected_columns["COD_NIVEL_J"].apply(to_int).astype('Int64')
-        selected_columns["COD_MODAL_J"] = selected_columns["COD_MODAL_J"].apply(to_int).astype('Int64')
-        selected_columns["ASIS_REAL_J"] = selected_columns["ASIS_REAL_J"].apply(to_int).astype('Int64')
-        selected_columns["ASIS_POTEN_J"] = selected_columns["ASIS_POTEN_J"].apply(to_int).astype('Int64')
-        selected_columns["DIAS_TRAB_GRUPO_J"] = selected_columns["DIAS_TRAB_GRUPO_J"].apply(to_int).astype('Int64')
-        selected_columns["COD_GRUPO_I"] = selected_columns["COD_GRUPO_I"].apply(to_int).astype('Int64')
-        selected_columns["COD_NIVEL_I"] = selected_columns["COD_NIVEL_I"].apply(to_int).astype('Int64')
-        selected_columns["TIPO_SOSTENEDOR"] = selected_columns["TIPO_SOSTENEDOR"].apply(to_int).astype('Int64')
-        selected_columns["ASIS_REAL_I"] = selected_columns["ASIS_REAL_I"].apply(to_int).astype('Int64')
-        selected_columns["ASIS_POT_I"] = selected_columns["ASIS_POT_I"].apply(to_int).astype('Int64')
-        selected_columns["POR_ASIS_I"] = selected_columns["POR_ASIS_I"].apply(to_float).astype('Float64')
+        
+        for col in int_columns:
+            df[col] = df[col].apply(to_int).astype('Int64')
+        df["POR_ASIS_I"] = df["POR_ASIS_I"].apply(to_float).astype('Float64')
         
 
         print("to create spark")
-        sdf = spark.createDataFrame(data=selected_columns, schema=schema)
+        sdf = spark.createDataFrame(data=df, schema=schema)
         sdf.printSchema()
         print("to write")
         #sdf.write.mode('append').saveAsTable('estudiantes_parvularia_matricula')
         sdf.write.mode('append').format('hive').saveAsTable('estudiantes_parvularia_matricula')
         # Append the selected columns to the combined_data DataFrame
-        #combined_data = pd.concat([combined_data, selected_columns], ignore_index=True)
+        #combined_data = pd.concat([combined_data, df], ignore_index=True)
 
     #print("To save")
     # Save the combined data to a new CSV file
