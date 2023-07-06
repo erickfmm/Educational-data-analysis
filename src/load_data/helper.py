@@ -1,6 +1,6 @@
 import numpy as np
-DEFAULT_VALUE_INT = -1
-DEFAULT_VALUE_FLOAT = -1.0
+DEFAULT_VALUE_INT = np.nan#-1
+DEFAULT_VALUE_FLOAT = np.nan#-1.0
 
 def to_int(n):
     try:

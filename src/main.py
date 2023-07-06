@@ -8,6 +8,7 @@ import logging
 from datetime import datetime
 from pytz import timezone 
 from src import connect_to_spark
+from src import connecy_to_postgres
 
 import pandas as pd
 
@@ -37,21 +38,17 @@ def setup_custom_logger(name: str, t_stamp: str) -> logging.Logger:
 def download_insert(args):        
         logger = logging.getLogger('root')
         logger.info(f"Iniciando create: args")
-        spark = connect_to_spark.connect(args)
-        #parvularia_df = 
-        parvularia_matricula_df.get_df(spark)
+        if args.bd == "spark":
+                spark = connect_to_spark.connect(args)
 
-        #_ = spark.sql("DROP TABLE IF EXISTS table_test_1")
-        #df = spark.createDataFrame(parvularia_df)
-        #df = spark.createDataFrame([
-        #        (100, "Hyukjin Kwon"), (120, "Hyukjin Kwon"), (140, "Haejoon Lee")],
-        #        schema=["age", "name"])
-        #df.write.saveAsTable("estudiantes_parvularia_matricula")
-        print("Tables:")
-        print(spark.catalog.listTables())
-        #_ = spark.sql("DROP TABLE table_test_1")
-        #print("Tables:")
-        #print(spark.catalog.listTables())
+                parvularia_matricula_df.get_df(spark, args.bd)
+
+                print("Tables:")
+                print(spark.catalog.listTables())
+        if args.bd == "postgres":
+                conn = connecy_to_postgres.connect(args)
+                parvularia_matricula_df.get_df(conn, args.bd)
+
 
 
 if __name__ == "__main__":
@@ -66,6 +63,7 @@ if __name__ == "__main__":
                 'insert', help='Inserta los datos a Spark')
         parser_create.set_defaults(func=download_insert)
         args = parser.parse_args()
+        args.bd = "postgres"
 
         if('func' in args): 
                 args.func(args); #Ejecuta la función por defecto

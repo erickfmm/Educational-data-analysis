@@ -169,5 +169,6 @@ datosabiertos.mineduc.cl/**
 !datosabiertos.mineduc.cl/estudiantes/parvularia_matricula.sh
 metastore_db/
 spark-warehouse/
+pgdata/
 
 **_LOG.txt
