@@ -3,9 +3,9 @@ import numpy as np
 from os.path import join
 import logging
 from pyspark.sql.types import StructType,StructField, StringType, IntegerType, FloatType, LongType, DoubleType
-from src.load_data.helper import to_int, to_float
+from src.load_data.helper import to_int, to_float, clean_row_forpgsql
 
-BASE_FOLDER = "datosabiertos.mineduc.cl\establecimientos\directorio_establecimientos"
+BASE_FOLDER = "datosabiertos.mineduc.cl/establecimientos/directorio_establecimientos"
 
 FILES_CSV = [
     "2004.csv",
@@ -89,7 +89,7 @@ COMMON_COLUMNS = [
     "PAGO_MENSUAL"
 ]
 
-def insert_df(spark):
+def insert_df(conn, bd: str):
     schema = StructType([
     StructField("AGNO",IntegerType(), True),
     StructField("RBD",IntegerType(), True),
@@ -168,8 +168,59 @@ def insert_df(spark):
         "ESTADO_ESTAB",
         "ORI_RELIGIOSA"
     ]
-    _ = spark.sql("DROP TABLE IF EXISTS establecimientos_directorio_establecimientos")
-    for file_path in FILES_CSV.extend(FILES_XLS):
+    if bd == "spark":
+        _ = conn.sql("DROP TABLE IF EXISTS establecimientos_directorio_establecimientos")
+    if bd == "postgres":
+        cur = conn.cursor()
+        _ = cur.execute("DROP TABLE IF EXISTS establecimientos_directorio_establecimientos;")
+        _ = cur.execute("""CREATE TABLE establecimientos_directorio_establecimientos(
+                    AGNO int,
+RBD int,
+DGV_RBD int,
+NOM_RBD VARCHAR(100),
+LET_RBD VARCHAR(100),
+NUM_RBD int,
+MRUN int,
+RUT_SOSTENEDOR int,
+P_JURIDICA int,
+COD_REG_RBD int,
+NOM_REG_RBD_A VARCHAR(100),
+COD_PRO_RBD int,
+COD_COM_RBD int,
+NOM_COM_RBD VARCHAR(100),
+COD_DEPROV_RBD int,
+NOM_DEPROV_RBD VARCHAR(100),
+COD_DEPE int,
+COD_DEPE2 int,
+RURAL_RBD int,
+LATITUD real,
+LONGITUD real,
+CONVENIO_PIE int,
+PACE int,
+ENS_01 int,
+ENS_02 int,
+ENS_03 int,
+ENS_04 int,
+ENS_05 int,
+ENS_06 int,
+ENS_07 int,
+ENS_08 int,
+ENS_09 int,
+ENS_10 int,
+ENS_11 int,
+ENS_12 int,
+MAT_TOTAL int,
+MATRICULA int,
+ESTADO_ESTAB int,
+ORI_RELIGIOSA int,
+ORI_OTRO_GLOSA VARCHAR(100),
+PAGO_MATRICULA VARCHAR(100),
+PAGO_MENSUAL    VARCHAR(100) 
+        )""")
+        conn.commit()
+        FILES_CSV.extend(FILES_XLS)
+        list_files = FILES_CSV
+    for file_path in list_files:
         file_path : str = file_path
         print(file_path)
         full_path = join(BASE_FOLDER, file_path)
@@ -185,10 +236,75 @@ def insert_df(spark):
 
         for col in int_columns:
             df[col] = df[col].apply(to_int).astype('Int64')
+        df["LATITUD"] = df["LATITUD"].apply(to_float).astype('Float64')
+        df["LONGITUD"] = df["LONGITUD"].apply(to_float).astype('Float64')
 
-        print("to create spark")
-        sdf = spark.createDataFrame(data=df, schema=schema)
-        sdf.printSchema()
-        print("to write")
-        #sdf.write.mode('append').saveAsTable('estudiantes_parvularia_matricula')
-        sdf.write.mode('append').format('hive').saveAsTable('establecimientos_directorio_establecimientos')
+        if bd == "spark":
+            print("to create spark")
+            sdf = conn.createDataFrame(data=df, schema=schema)
+            sdf.printSchema()
+            print("to write")
+            #sdf.write.mode('append').saveAsTable('estudiantes_parvularia_matricula')
+            sdf.write.mode('append').format('hive').saveAsTable('establecimientos_directorio_establecimientos')
+        if bd == "postgres":
+            print(len(df))
+            i_rows = 0
+            for index, row in df.iterrows():
+                mirow = clean_row_forpgsql(row)
+                miinsert = f'INSERT INTO establecimientos_directorio_establecimientos(AGNO,RBD,DGV_RBD,NOM_RBD,LET_RBD,NUM_RBD,MRUN,RUT_SOSTENEDOR,P_JURIDICA,COD_REG_RBD,NOM_REG_RBD_A,COD_PRO_RBD,COD_COM_RBD,NOM_COM_RBD,COD_DEPROV_RBD,NOM_DEPROV_RBD,COD_DEPE,COD_DEPE2,RURAL_RBD,LATITUD,LONGITUD,CONVENIO_PIE,PACE,ENS_01,ENS_02,ENS_03,ENS_04,ENS_05,ENS_06,ENS_07,ENS_08,ENS_09,ENS_10,ENS_11,ENS_12,MAT_TOTAL,MATRICULA,ESTADO_ESTAB,ORI_RELIGIOSA,ORI_OTRO_GLOSA,PAGO_MATRICULA,PAGO_MENSUAL) VALUES(\
+    {mirow["AGNO"]},\
+    {mirow["RBD"]},\
+    {mirow["DGV_RBD"]},\
+    {mirow["NOM_RBD"]},\
+    {mirow["LET_RBD"]},\
+    {mirow["NUM_RBD"]},\
+    {mirow["MRUN"]},\
+    {mirow["RUT_SOSTENEDOR"]},\
+    {mirow["P_JURIDICA"]},\
+    {mirow["COD_REG_RBD"]},\
+    {mirow["NOM_REG_RBD_A"]},\
+    {mirow["COD_PRO_RBD"]},\
+    {mirow["COD_COM_RBD"]},\
+    {mirow["NOM_COM_RBD"]},\
+    {mirow["COD_DEPROV_RBD"]},\
+    {mirow["NOM_DEPROV_RBD"]},\
+    {mirow["COD_DEPE"]},\
+    {mirow["COD_DEPE2"]},\
+    {mirow["RURAL_RBD"]},\
+    {mirow["LATITUD"]},\
+    {mirow["LONGITUD"]},\
+    {mirow["CONVENIO_PIE"]},\
+    {mirow["PACE"]},\
+    {mirow["ENS_01"]},\
+    {mirow["ENS_02"]},\
+    {mirow["ENS_03"]},\
+    {mirow["ENS_04"]},\
+    {mirow["ENS_05"]},\
+    {mirow["ENS_06"]},\
+    {mirow["ENS_07"]},\
+    {mirow["ENS_08"]},\
+    {mirow["ENS_09"]},\
+    {mirow["ENS_10"]},\
+    {mirow["ENS_11"]},\
+    {mirow["ENS_12"]},\
+    {mirow["MAT_TOTAL"]},\
+    {mirow["MATRICULA"]},\
+    {mirow["ESTADO_ESTAB"]},\
+    {mirow["ORI_RELIGIOSA"]},\
+    {mirow["ORI_OTRO_GLOSA"]},\
+    {mirow["PAGO_MATRICULA"]},\
+    {mirow["PAGO_MENSUAL"]}\
+                );'
+                try:
+                    _ = cur.execute(miinsert)
+                except Exception as e:
+                    print(mirow)
+                    print()
+                    print(miinsert)
+                    print()
+                    print(e)
+                    return
+                i_rows += 1
+                if i_rows % 1000 == 0:
+                    print(i_rows)
+                    conn.commit()

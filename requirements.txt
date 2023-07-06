@@ -4,3 +4,5 @@ grpcio-status
 pandas
 PyArrow
 psycopg2-binary
+xlrd
+openpyxl

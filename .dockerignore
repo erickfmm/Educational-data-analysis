@@ -1,4 +1,5 @@
 datosabiertos.mineduc.cl/
 metastore_db/
 spark-warehouse/
+pgdata/
 run.bat

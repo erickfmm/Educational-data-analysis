@@ -13,6 +13,7 @@ from src import connecy_to_postgres
 import pandas as pd
 
 from src.load_data import load_estudiantes_parvularia_matricula as parvularia_matricula_df
+from src.load_data import load_directorio_establecimientos
 
 def setup_custom_logger(name: str, t_stamp: str) -> logging.Logger:
         _nameLogFile = f'./{t_stamp}_LOG.txt'
@@ -47,7 +48,8 @@ def download_insert(args):
                 print(spark.catalog.listTables())
         if args.bd == "postgres":
                 conn = connecy_to_postgres.connect(args)
-                parvularia_matricula_df.get_df(conn, args.bd)
+                #parvularia_matricula_df.get_df(conn, args.bd)
+                load_directorio_establecimientos.insert_df(conn, args.bd)
 
 
 
