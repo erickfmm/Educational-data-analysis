@@ -8,25 +8,25 @@ from src.load_data.helper import to_int, to_float, clean_row_forpgsql
 BASE_FOLDER = "datosabiertos.mineduc.cl/estudiantes/escolar_matricula"
 
 FILES_CSV = [
-"20140805_matricula_unica_2004_20040430_PUBL.csv",
-"20140805_matricula_unica_2005_20050430_PUBL.csv",
-"20140805_matricula_unica_2006_20060430_PUBL.csv",
-"20140805_matricula_unica_2007_20070430_PUBL.csv",
-"20140805_matricula_unica_2008_20080430_PUBL.csv",
-"20140805_matricula_unica_2009_20090430_PUBL.csv",
-"20130904_matricula_unica_2010_20100430_PUBL.csv",
-"20140812_matricula_unica_2011_20110430_PUBL.csv",
-"20140812_matricula_unica_2012_20120430_PUBL.csv",
-"20140808_matricula_unica_2013_20130430_PUBL.csv",
-"20140924_matricula_unica_2014_20140430_PUBL.csv",
-"20150923_matricula_unica_2015_20150430_PUBL.CSV",
-"20160926_matricula_unica_2016_20160430_PUBL.csv",
-"20170921_matricula_unica_2017_20170430_PUBL.csv",
-"20181005_Matr",
-"20191028_Matr",
-"20200921_Matr",
-"20210913_Matr",
-"20220908_Matr"
+("20140805_matricula_unica_2004_20040430_PUBL.csv", 2004),
+("20140805_matricula_unica_2005_20050430_PUBL.csv", 2005),
+("20140805_matricula_unica_2006_20060430_PUBL.csv", 2006),
+("20140805_matricula_unica_2007_20070430_PUBL.csv", 2007),
+("20140805_matricula_unica_2008_20080430_PUBL.csv", 2008),
+("20140805_matricula_unica_2009_20090430_PUBL.csv", 2009),
+("20130904_matricula_unica_2010_20100430_PUBL.csv", 2010),
+("20140812_matricula_unica_2011_20110430_PUBL.csv", 2011),
+("20140812_matricula_unica_2012_20120430_PUBL.csv", 2012),
+("20140808_matricula_unica_2013_20130430_PUBL.csv", 2013),
+("20140924_matricula_unica_2014_20140430_PUBL.csv", 2014),
+("20150923_matricula_unica_2015_20150430_PUBL.CSV", 2015),
+("20160926_matricula_unica_2016_20160430_PUBL.csv", 2016),
+("20170921_matricula_unica_2017_20170430_PUBL.csv", 2017),
+("20181005_Matr", 2018),
+("20191028_Matr", 2019),
+("20200921_Matr", 2020),
+("20210913_Matr", 2021),
+("20220908_Matr", 2022)
 ]
 
 
@@ -116,6 +116,7 @@ def insert_df(conn, bd: str):
         cur = conn.cursor()
         _ = cur.execute("DROP TABLE IF EXISTS estudiantes_escolar_matricula;")
         _ = cur.execute("""CREATE TABLE estudiantes_escolar_matricula(
+                        FILE_YEAR int,
                 AGNO int,
                 RBD int,
                 DGV_RBD int,
@@ -154,13 +155,13 @@ def insert_df(conn, bd: str):
                 ENS int
         );""")
         conn.commit()
-    for file_path in FILES_CSV:
+    for file_path, fileyear in FILES_CSV:
         file_path : str = file_path
         print(file_path)
         full_path = join(BASE_FOLDER, file_path)
         #print(full_path)
         # Load the file into a DataFrame
-        chunks = pd.read_csv(full_path, sep=";", on_bad_lines="warn", low_memory=False, chunksize=10**6, encoding="iso 8859-1")
+        chunks = pd.read_csv(full_path, sep=";", on_bad_lines="warn", low_memory=False, chunksize=10**5, encoding="iso 8859-1")
         i_chunk = 0
         for df in chunks:
             print("chunk ", i_chunk)
@@ -188,8 +189,10 @@ def insert_df(conn, bd: str):
                 i_rows = 0
                 for index, row in df.iterrows():
                     mirow = clean_row_forpgsql(row)
-                    miinsert = f'INSERT INTO estudiantes_escolar_matricula(AGNO,RBD,DGV_RBD,NOM_RBD,COD_REG_RBD,NOM_REG_RBD_A,COD_PRO_RBD,COD_COM_RBD,NOM_COM_RBD,COD_DEPROV_RBD,NOM_DEPROV_RBD,COD_DEPE,COD_DEPE2,RURAL_RBD,ESTADO_ESTAB,COD_ENSE,COD_ENSE2,COD_ENSE3,COD_GRADO,COD_GRADO2,LET_CUR,COD_JOR,COD_TIP_CUR,COD_DES_CUR,MRUN,GEN_ALU,FEC_NAC_ALU,EDAD_ALU,COD_REG_ALU,COD_COM_ALU,NOM_COM_ALU,COD_SEC,COD_ESPE,COD_RAMA,COD_MEN,ENS) VALUES(\
-        {mirow["AGNO"]},\
+                    mirow["FILE_YEAR"] = fileyear
+                    miinsert = f'INSERT INTO estudiantes_escolar_matricula(FILE_YEAR,AGNO,RBD,DGV_RBD,NOM_RBD,COD_REG_RBD,NOM_REG_RBD_A,COD_PRO_RBD,COD_COM_RBD,NOM_COM_RBD,COD_DEPROV_RBD,NOM_DEPROV_RBD,COD_DEPE,COD_DEPE2,RURAL_RBD,ESTADO_ESTAB,COD_ENSE,COD_ENSE2,COD_ENSE3,COD_GRADO,COD_GRADO2,LET_CUR,COD_JOR,COD_TIP_CUR,COD_DES_CUR,MRUN,GEN_ALU,FEC_NAC_ALU,EDAD_ALU,COD_REG_ALU,COD_COM_ALU,NOM_COM_ALU,COD_SEC,COD_ESPE,COD_RAMA,COD_MEN,ENS) VALUES(\
+        {mirow["FILE_YEAR"]},\
+{mirow["AGNO"]},\
     {mirow["RBD"]},\
     {mirow["DGV_RBD"]},\
     {mirow["NOM_RBD"]},\
@@ -237,5 +240,5 @@ def insert_df(conn, bd: str):
                         return
                     i_rows += 1
                     if i_rows % 1000 == 0:
-                        print(i_rows)
+                        print("file: ",file_path,", chunk: ", i_chunk, ", rows: ", i_rows)
                         conn.commit()

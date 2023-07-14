@@ -8,40 +8,40 @@ from src.load_data.helper import to_int, to_float, clean_row_forpgsql
 BASE_FOLDER = "datosabiertos.mineduc.cl/establecimientos/directorio_establecimientos"
 
 FILES_CSV = [
-    "2004.csv",
-    "2005.csv",
-    "2006.csv",
-    "2007.csv",
-    "2008.csv",
-    "2009.csv",
-    "2010.csv",
-    "2011.csv",
-    "2012.csv",
-    "Directorio_oficial_EE_2013.csv",
-    "Directorio_oficial_EE_2014.csv",
-    "Directorio_oficial_EE_2015.csv",
-    "Directorio_oficial_EE_2016.csv",
-    "Directorio_oficial_EE_2017.csv",
-    "Directorio_oficial_EE_2018.csv",
-    "Directorio_oficial_EE_2019.csv",
-    "Directorio_oficial_EE_2020.csv",
-    "Directorio_oficial_EE_2021.csv",
-    "20220914_Directorio_Oficial_EE_2022_20220430_WEB.csv"
+    ("2004.csv", 2004),
+    ("2005.csv", 2005),
+    ("2006.csv", 2006),
+    ("2007.csv", 2007),
+    ("2008.csv", 2008),
+    ("2009.csv", 2009),
+    ("2010.csv", 2010),
+    ("2011.csv", 2011),
+    ("2012.csv", 2012),
+    ("Directorio_oficial_EE_2013.csv", 2013),
+    ("Directorio_oficial_EE_2014.csv", 2014),
+    ("Directorio_oficial_EE_2015.csv", 2015),
+    ("Directorio_oficial_EE_2016.csv", 2016),
+    ("Directorio_oficial_EE_2017.csv", 2017),
+    ("Directorio_oficial_EE_2018.csv", 2018),
+    ("Directorio_oficial_EE_2019.csv", 2019),
+    ("Directorio_oficial_EE_2020.csv", 2020),
+    ("Directorio_oficial_EE_2021.csv", 2021),
+    ("20220914_Directorio_Oficial_EE_2022_20220430_WEB.csv", 2022)
 ]
 
 FILES_XLS = [
-    "Directorio 1992.xls",
-    "Directorio 1993.xls",
-    "Directorio 1994.xls",
-    "Directorio 1995.xls",
-    "Directorio 1996.xls",
-    "Directorio 1997.xls",
-    "Directorio 1998.xls",
-    "Directorio 1999.xls",
-    "Directorio 2000.xls",
-    "Directorio 2001.xls",
-    "Directorio 2002.xls",
-    "Directoriooficial2003/directorio 2003.xlsx"
+    ("Directorio 1992.xls", 1992),
+    ("Directorio 1993.xls", 1993),
+    ("Directorio 1994.xls", 1994),
+    ("Directorio 1995.xls", 1995),
+    ("Directorio 1996.xls", 1996),
+    ("Directorio 1997.xls", 1997),
+    ("Directorio 1998.xls", 1998),
+    ("Directorio 1999.xls", 1999),
+    ("Directorio 2000.xls", 2000),
+    ("Directorio 2001.xls", 2001),
+    ("Directorio 2002.xls", 2002),
+    ("Directoriooficial2003/directorio 2003.xlsx", 2003)
 ]
 
 COMMON_COLUMNS = [
@@ -174,10 +174,11 @@ def insert_df(conn, bd: str):
         cur = conn.cursor()
         _ = cur.execute("DROP TABLE IF EXISTS establecimientos_directorio_establecimientos;")
         _ = cur.execute("""CREATE TABLE establecimientos_directorio_establecimientos(
-                    AGNO int,
+                    FILE_YEAR int,
+                        AGNO int,
 RBD int,
 DGV_RBD int,
-NOM_RBD VARCHAR(100),
+NOM_RBD VARCHAR(255),
 LET_RBD VARCHAR(100),
 NUM_RBD int,
 MRUN int,
@@ -220,14 +221,18 @@ PAGO_MENSUAL    VARCHAR(100)
         conn.commit()
         FILES_CSV.extend(FILES_XLS)
         list_files = FILES_CSV
-    for file_path in list_files:
+    for file_path, fileyear in list_files:
         file_path : str = file_path
         print(file_path)
         full_path = join(BASE_FOLDER, file_path)
         #print(full_path)
         # Load the file into a DataFrame
         if file_path.endswith(".csv"):
-            df = pd.read_csv(full_path, sep=";", on_bad_lines="warn", low_memory=False)
+            df = pd.read_csv(full_path, sep=";", on_bad_lines="warn", low_memory=False, encoding="iso 8859-1")
+            mycols = list(df.columns)
+            mycols[0] = "AGNO"
+            mycols = [x.upper() for x in mycols]
+            df.columns = mycols
         if file_path.endswith(".xls") or file_path.endswith(".xlsx"):
             df = pd.read_excel(full_path, 0)
         print("to reindex")
@@ -251,8 +256,10 @@ PAGO_MENSUAL    VARCHAR(100)
             i_rows = 0
             for index, row in df.iterrows():
                 mirow = clean_row_forpgsql(row)
-                miinsert = f'INSERT INTO establecimientos_directorio_establecimientos(AGNO,RBD,DGV_RBD,NOM_RBD,LET_RBD,NUM_RBD,MRUN,RUT_SOSTENEDOR,P_JURIDICA,COD_REG_RBD,NOM_REG_RBD_A,COD_PRO_RBD,COD_COM_RBD,NOM_COM_RBD,COD_DEPROV_RBD,NOM_DEPROV_RBD,COD_DEPE,COD_DEPE2,RURAL_RBD,LATITUD,LONGITUD,CONVENIO_PIE,PACE,ENS_01,ENS_02,ENS_03,ENS_04,ENS_05,ENS_06,ENS_07,ENS_08,ENS_09,ENS_10,ENS_11,ENS_12,MAT_TOTAL,MATRICULA,ESTADO_ESTAB,ORI_RELIGIOSA,ORI_OTRO_GLOSA,PAGO_MATRICULA,PAGO_MENSUAL) VALUES(\
-    {mirow["AGNO"]},\
+                mirow["FILE_YEAR"] = fileyear
+                miinsert = f'INSERT INTO establecimientos_directorio_establecimientos(FILE_YEAR, AGNO,RBD,DGV_RBD,NOM_RBD,LET_RBD,NUM_RBD,MRUN,RUT_SOSTENEDOR,P_JURIDICA,COD_REG_RBD,NOM_REG_RBD_A,COD_PRO_RBD,COD_COM_RBD,NOM_COM_RBD,COD_DEPROV_RBD,NOM_DEPROV_RBD,COD_DEPE,COD_DEPE2,RURAL_RBD,LATITUD,LONGITUD,CONVENIO_PIE,PACE,ENS_01,ENS_02,ENS_03,ENS_04,ENS_05,ENS_06,ENS_07,ENS_08,ENS_09,ENS_10,ENS_11,ENS_12,MAT_TOTAL,MATRICULA,ESTADO_ESTAB,ORI_RELIGIOSA,ORI_OTRO_GLOSA,PAGO_MATRICULA,PAGO_MENSUAL) VALUES(\
+{mirow["FILE_YEAR"]},\
+{mirow["AGNO"]},\
     {mirow["RBD"]},\
     {mirow["DGV_RBD"]},\
     {mirow["NOM_RBD"]},\
@@ -306,5 +313,5 @@ PAGO_MENSUAL    VARCHAR(100)
                     return
                 i_rows += 1
                 if i_rows % 1000 == 0:
-                    print(i_rows)
+                    print("file: ", file_path, ", rows: ", i_rows)
                     conn.commit()

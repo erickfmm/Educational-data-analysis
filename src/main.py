@@ -49,8 +49,8 @@ def download_insert(args):
                 print(spark.catalog.listTables())
         if args.bd == "postgres":
                 conn = connect_to_postgres.connect(args)
-                #parvularia_matricula_df.get_df(conn, args.bd)
-                #load_directorio_establecimientos.insert_df(conn, args.bd)
+                load_directorio_establecimientos.insert_df(conn, args.bd)
+                parvularia_matricula_df.get_df(conn, args.bd)
                 load_estudiantes_escolar_matriculas.insert_df(conn, args.bd)
 
 
