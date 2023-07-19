@@ -234,7 +234,7 @@ def get_df(conn, bd: str):
             DESC_MODAL_J VARCHAR(100),
             ASIS_REAL_J int,
             ASIS_POTEN_J int,
-            POR_ASIS_J int,
+            POR_ASIS_J real,
             COD_JOR_J VARCHAR(100),
             NOM_JOR_J VARCHAR(100),
             DIAS_TRAB_GRUPO_J int,
@@ -269,6 +269,7 @@ def get_df(conn, bd: str):
         
         for col in int_columns:
             df[col] = df[col].apply(to_int).astype('Int64')
+        df["POR_ASIS_J"] = df["POR_ASIS_J"].apply(to_float).astype('Float64')
         df["POR_ASIS_I"] = df["POR_ASIS_I"].apply(to_float).astype('Float64')
         df["LATITUD"] = df["LATITUD"].apply(to_float).astype('Float64')
         df["LONGITUD"] = df["LONGITUD"].apply(to_float).astype('Float64')
