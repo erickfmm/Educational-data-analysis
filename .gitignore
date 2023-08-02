@@ -171,4 +171,6 @@ metastore_db/
 spark-warehouse/
 pgdata/
 
+files_**
+
 **_LOG.txt
