@@ -6,3 +6,4 @@ PyArrow
 psycopg2-binary
 xlrd
 openpyxl
+PyMuPDF
