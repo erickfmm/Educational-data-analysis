@@ -3,6 +3,9 @@ import sys
 import fitz
 
 def read_text(folder):
+    newfolder = "txt_"+folder
+    if not os.path.exists(newfolder):
+        os.mkdir(newfolder)
     for filename in os.listdir(folder):
         filename : str = filename
         if not filename.endswith(".pdf"):
@@ -12,7 +15,7 @@ def read_text(folder):
         text = ""
         for page in doc:
             text+=page.get_text()
-        with open(os.path.join(folder, f"text_{filename}.txt"), "w", encoding="utf-8", errors="warn") as fh:
+        with open(os.path.join(newfolder, f"text_{filename}.txt"), "w", encoding="utf-8", errors="warn") as fh:
             fh.write(text)
         
 if __name__ == "__main__":

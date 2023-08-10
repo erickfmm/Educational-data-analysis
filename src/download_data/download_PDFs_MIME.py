@@ -30,9 +30,14 @@ def download_PDFs_PEI(conn, bd, tipo="pei"):
         return
     if not os.path.exists(folder):
         os.mkdir(folder)
+    i_rbd = 0
+    n_rbds_procesados = 0
     for rbd in rbds:
+        if i_rbd < n_rbds_procesados:
+            i_rbd += 1
+            continue
         rbd = rbd[0]
-        print(base_url(rbd))
+        print(i_rbd, " - ", base_url(rbd))
         r = requests.get(base_url(rbd))
         if r.status_code == 200:
             fh = open(join(folder, f"{prefix}{rbd}.pdf"), "wb")
@@ -42,6 +47,7 @@ def download_PDFs_PEI(conn, bd, tipo="pei"):
             time.sleep(5)
         else:
             print("Error downloading")
+        i_rbd += 1
     print(len(rbds))
     
 

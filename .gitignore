@@ -172,5 +172,6 @@ spark-warehouse/
 pgdata/
 
 files_**
+txt_files_**
 
 **_LOG.txt
