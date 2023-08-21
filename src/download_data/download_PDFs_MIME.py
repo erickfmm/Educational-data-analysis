@@ -7,7 +7,7 @@ import time
 def download_PDFs_PEI(conn, bd, tipo="pei"):
     if bd == "postgres":
         cur = conn.cursor()
-        _ = cur.execute("SELECT rbd FROM public.establecimientos_directorio_establecimientos WHERE file_year=2022;")
+        _ = cur.execute("SELECT rbd FROM public.establecimientos_directorio_establecimientos WHERE file_year=2022 ORDER BY rbd;")
         rbds = cur.fetchall()
     elif bd == "spark":
         return
@@ -37,6 +37,9 @@ def download_PDFs_PEI(conn, bd, tipo="pei"):
             i_rbd += 1
             continue
         rbd = rbd[0]
+        if os.path.exists(join(folder, f"{prefix}{rbd}.pdf")):
+            print(join(folder, f"{prefix}{rbd}.pdf"), "\t", "exists")
+            continue
         print(i_rbd, " - ", base_url(rbd))
         r = requests.get(base_url(rbd))
         if r.status_code == 200:
@@ -55,4 +58,4 @@ if __name__ == "__main__":
     sys.path.append(abspath(join(dirname(__file__), '..', '..')))
     from src import connect_to_postgres
     conn = connect_to_postgres.connect(None)
-    download_PDFs_PEI(conn, "postgres")
+    download_PDFs_PEI(conn, "postgres", "convivencia")

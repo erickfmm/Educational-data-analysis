@@ -11,7 +11,11 @@ def read_text(folder):
         if not filename.endswith(".pdf"):
             continue
         print(filename)
-        doc = fitz.open(os.path.join(folder, filename))
+        try:
+            doc = fitz.open(os.path.join(folder, filename))
+        except:
+            print("Error in parsing pdf")
+            continue
         text = ""
         for page in doc:
             text+=page.get_text()
