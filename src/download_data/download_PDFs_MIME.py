@@ -39,6 +39,7 @@ def download_PDFs_PEI(conn, bd, tipo="pei"):
         rbd = rbd[0]
         if os.path.exists(join(folder, f"{prefix}{rbd}.pdf")):
             print(join(folder, f"{prefix}{rbd}.pdf"), "\t", "exists")
+            i_rbd += 1
             continue
         print(i_rbd, " - ", base_url(rbd))
         r = requests.get(base_url(rbd))
